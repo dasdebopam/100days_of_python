@@ -31,3 +31,6 @@ if __name__ == '__main__':
             print(j)
             break
         
+#thoughts:
+# i've had a top down approch where i tested each and every step via printing it maybe due to lack of confidance
+# although some might argue that using 'pass' and 'break' is not a good practice but in my case it brought me fast results
