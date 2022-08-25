@@ -1,0 +1,53 @@
+'''
+Question:
+Given the names and grades for each student in a class of N students, 
+store them in a nested list and print the name(s) of any student(s) having the second lowest grade.
+Note: If there are multiple students with the second lowest grade, order their names alphabetically and print each name on a new line.
+
+Input:
+5
+Harry
+37.21
+Berry
+37.21
+Tina
+37.2
+Akriti
+41
+Harsh
+39
+
+Output:
+Berry
+Harry
+'''
+
+if __name__ == '__main__':
+    scores=[]
+    students=list()
+    for _ in range(int(input())):
+        name = input()
+        score = float(input())
+        scores.append(score)                        		     #list of scores
+        students.append([name,score])      		     #nesed list of students and scores 
+        
+    count = scores.count(min(scores))      		     #number of min scores
+    for i in range(count):
+        scores.remove(min(scores))              		     #removing the min scores no of times it is there
+        
+    secondHigh = min(scores)                  		     #getting the second lowest score
+    
+    students.sort()                                    		     #alphabetically sorting the nested list
+    output = [x for x in students if x[1] == secondHigh] #creating a list of students with second highest score 
+    for i in output:
+        print(i[0])				     #printing the output 
+
+
+'''
+Thoughts:
+i did take aid from youtube
+although i went on trying Dictonary method but realized the problem is of nested list and thus
+aim to improve our control over nested lists
+major fault of mine was to not remove the all min scores that were there 
+so in previous submission only one copy of last score was being removed
+'''
