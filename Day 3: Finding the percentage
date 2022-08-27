@@ -1,0 +1,36 @@
+'''
+Question:
+The provided code stub will read in a dictionary containing key/value pairs of name:[marks] for a list of students. 
+Print the average of the marks array for the student name provided, showing 2 places after the decimal.
+
+Input:
+3
+Krishna 67 68 69
+Arjun 70 98 63
+Malika 52 56 60
+Malika
+
+Output:
+56.00
+
+'''
+if __name__ == '__main__':
+    n = int(input())
+    student_marks = {}
+    for _ in range(n):
+        name, *line = input().split()
+        scores = list(map(float, line))
+        student_marks[name] = scores
+    query_name = input()
+    
+    if query_name in student_marks:		#used 'if' 
+        marks=student_marks.get(query_name)   	#get() function to find value from key
+        n=sum(marks)				#sum() to find sum of marks
+        l=len(marks)              			#len() to fine num of marks
+        a=n/l				#to find average
+        
+    print('%.2f' % a)				#to print upto 2 decimal places
+'''
+Thought: quite simple average problem i needed to print upto 2 decimal places  and among all the options i found
+'%.2f' % a to be working
+'''
