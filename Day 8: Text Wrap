@@ -1,0 +1,36 @@
+'''
+Ouestion:
+You are given a string S and width w.
+Your task is to wrap the string into a paragraph of width w .
+
+input:
+ABCDEFGHIJKLIMNOQRSTUVWXYZ
+4
+
+output:
+ABCD
+EFGH
+IJKL
+IMNO
+QRST
+UVWX
+YZ
+'''
+import textwrap
+
+def wrap(string, max_width):
+    l=string
+    i=max_width
+    b=textwrap.fill(l,i)
+    return b
+
+if __name__ == '__main__':
+    string, max_width = input(), int(input())
+    result = wrap(string, max_width)
+    print(result)
+'''
+thoughts:
+At first i tried to bruteforce my way in then with a clear mind
+i noticed the import textwrap line and then explored the library 
+to solve the problem
+'''
