@@ -1,0 +1,37 @@
+'''
+Question:
+There are three substrings of length 3 to consider: 'AAA', 'BCA' and 'DDE'. The first substring is all 'A' characters, so u1='A'. The second substring has all distinct characters, so u2='BCA'. The third substring has  different characters, so u3='DE'. Note that a subsequence maintains the original order of characters encountered. The order of characters in each subsequence shown is important.
+
+Function Description
+Complete the merge_the_tools function in the editor below.
+merge_the_tools has the following parameters:
+string s: the string to analyze
+int k: the size of substrings to analyze
+
+Input:
+AABCAAADA
+3
+
+Output:
+AB
+CA
+AD
+
+'''
+def merge_the_tools(string, k):
+    # your code goes here
+    n = len(string)
+    for i in range(0,n,k):	#the 3rd digit reperesents the 'skipping' of the value i breking i to n in k parts
+        result = []
+        [result.append(x) for x in string[i:i+k] if x not in result]	#any string between i to i+k (that segment) if not previously in result be in result	
+        print("".join(result))
+    
+
+if __name__ == '__main__':
+    string, k = input(), int(input())
+    merge_the_tools(string, k)
+'''
+Thoughts:
+this did require help from internet and prompted me to study list comprehensions
+
+'''
