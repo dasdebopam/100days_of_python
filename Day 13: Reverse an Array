@@ -1,0 +1,25 @@
+'''
+Love Babbar DSA
+
+Question:
+Given an array A of size N, print the reverse of it.
+1st input is A then N, then contains of A
+
+Input:
+1
+4
+1 2 3 4
+'''
+a=int(input())
+b=int(input())
+c=input()
+c=c.split(" ")
+c.reverse()
+for i in c:
+    print(i,end=" ")
+'''
+Thoughts:
+theres no DS called arry in Python, but list serves in its place
+and since its far more flexible than array we do not requitre to use
+the 1st to inputs
+'''
