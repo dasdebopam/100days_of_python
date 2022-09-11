@@ -1,0 +1,48 @@
+'''
+Love Babbar
+
+Question:
+Given an array arr[] and an integer K where K is smaller than size of array,
+the task is to find the Kth smallest element in the given array. 
+It is given that all array elements are distinct.
+
+Input:
+N = 6
+arr[] = 7 10 4 3 20 15
+K = 3
+
+Output:
+7
+
+'''
+#User function Template for python3
+
+class Solution:
+    def kthSmallest(self,arr, l, r, k):
+        for i in range(k-1):
+            a=min(arr)
+            arr.remove(a)
+        b=min(arr)
+        return(b)
+
+#{ 
+ # Driver Code Starts
+#Initial Template for Python 3
+
+#contributed by RavinderSinghPB
+if __name__ == '__main__': 
+    import random 
+    t=int(input())
+    for tcs in range(t):
+        n=int(input())
+        arr=list(map(int,input().strip().split()))
+        k=int(input())
+        ob=Solution()
+        print(ob.kthSmallest(arr, 0, n-1, k))
+        
+# } Driver Code Ends
+'''
+Thought:
+Did suceed however the compiler said my code isn't time optimized
+NEED to look into it
+'''
