@@ -1,0 +1,27 @@
+'''
+Love Babbar
+
+Question:
+Given an array a[] of size N which contains elements from 0 to N-1,
+you need to find all the elements occurring more than once in the given array.
+
+Input:
+N = 5
+a[] = {2,3,1,2,3}
+
+Output:
+2 3 
+'''
+arr.sort()
+l=[]
+for i in range(1,n-1):
+    if arr[i]==arr[i-1]:
+        l.append(arr[i])
+l=set(l)
+for x in l:print(x)
+'''
+Thought:
+Although i was able to nail the problem
+there were 2 issues: time and method
+i assume its high time for me to study theory
+'''
