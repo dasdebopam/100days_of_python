@@ -1,0 +1,40 @@
+'''
+sound on press of a button
+
+using tkinter playsound and pyinstaller
+'''
+import tkinter
+def sound():
+    from playsound import playsound
+    sound=r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Audio\tomscream.mp3"
+    playsound(sound)
+
+'''    
+w=300
+h=100
+
+ws = window.winfo_screenwidth() # width of the screen
+hs = window.winfo_screenheight() # height of the screen
+
+# calculate x and y coordinates for the Tk root window
+x = (ws/2) - (w/2)
+y = (hs/2) - (h/2)
+'''
+window = tkinter.Tk()
+window.title("eXpReSSioN")
+window.geometry("300x100")
+window.config(bg="white")
+myl=tkinter.Label(window,text="press this button to express yourself",bg="white")
+
+w = tkinter.Button(window,text="wHaT eW tRulY fEEl", command=sound,bg="red",font="Monospace")
+
+myl.pack()
+w.pack()
+
+window.mainloop()
+'''
+convert the .py file to .exe in the 
+pyinstaller --onefile -w 'filename.py'
+Thought:
+Idea comethIi grindeth
+'''
