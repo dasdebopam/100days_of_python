@@ -1,0 +1,43 @@
+'''
+Making a Music player
+in probably 3 parts
+following is GUI using TKinter
+
+'''
+import tkinter
+from tkinter import *
+import pygame
+
+
+
+#UI
+window = tkinter.Tk()
+
+window.title("Music Player")
+
+window.geometry("300x200")
+
+iprev= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\previous.png").subsample(3, 3)
+iplay= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\play.png").subsample(3, 3)
+ipause= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\pause.png").subsample(3, 3)
+inext= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\next.png").subsample(3, 3)
+ivolup= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\volup.png").subsample(3, 3)
+istop= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\stop.png").subsample(3, 3)
+ivoldown= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\voldown.png").subsample(3, 3)
+
+t=tkinter.Text(height=1,width=30,state='disabled').place(x=25,y=30)
+l1=tkinter.Label(window,text="Now Playing:").place(x=25,y=5)
+prev=tkinter.Button(window,text="previous",image=iprev).place(x=25,y=60)
+play=tkinter.Button(window,text="play",image=iplay).place(x=120,y=60)
+Next=tkinter.Button(window,text="next",image=inext).place(x=210,y=60)
+voldown=tkinter.Button(window,text="decrease volume",image=ivoldown).place(x=25,y=120)
+stop=tkinter.Button(window,text="stop",image=istop).place(x=120,y=120)
+Volup=tkinter.Button(window,text="increase volume",image=ivolup).place(x=210,y=120)
+
+window.mainloop()
+'''
+thoughts: Used Absolute placing 
+way better approach
+
+
+'''
