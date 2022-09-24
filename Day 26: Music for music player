@@ -1,0 +1,24 @@
+'''
+Music that is to be played from Music Player
+Topic: File handling
+Using: os 
+'''
+import os
+
+
+#musicfiles
+dirr=r'C:\Users\DEBOPAM DAS\Music\MusicPlayer'
+
+res = os.listdir(dirr)
+
+'''
+Thoughts:
+I am having to connect the location of the folder "Music Player"
+and enter it's contents in a list then run each item of the list 
+in the main loop
+
+Isuues:
+How do i get the player
+to acess a folder named "Music Player"
+from anywhere in my computer
+'''
