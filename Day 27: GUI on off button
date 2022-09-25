@@ -1,0 +1,35 @@
+'''
+I needed to understand the 
+On Off switch to integrate the systemm
+into my music player
+'''
+import tkinter
+from tkinter import *
+
+is_on = False
+
+def action():
+    global is_on
+    
+    if is_on:
+        my_label.config(text = "The Switch is Off!",
+                        fg = "grey")
+        is_on = False
+    else:
+        my_label.config(text = "The Switch is On!", fg = "green")
+        is_on = True
+    
+        
+root=Tk()
+root.title('On/Off Switch!')
+root.geometry("500x300")
+my_label = Label(root,text = "The Switch Is Off!")
+my_label.pack(pady = 20)
+on_button = Button(root, bd = 100,command=action).pack(pady = 50)
+root.mainloop()
+'''
+I understood the flow but the challenge is to 
+switch when a block of code is under execution
+like a music that is being played
+
+'''
