@@ -1,0 +1,162 @@
+'''
+tools used Python,tkinter,pygame,os
+Play,Pause,Next,Previous,Volume up and Down
+'''
+import tkinter
+import itertools
+import pygame
+import os
+from tkinter import PhotoImage
+pygame.mixer.init()
+
+mxstate=0
+vol=0.5
+pygame.mixer.music.set_volume(vol)
+
+#functionality
+dirr=r'C:\Users\DEBOPAM DAS\Music\MusicPlayer'
+
+#musicfiles
+res = os.listdir(dirr)
+
+
+i=0
+song=res[i]
+now=r'C:\Users\DEBOPAM DAS\Music\MusicPlayer\{}'.format(song)
+pygame.mixer.music.load(now)
+    
+
+def play_pause():
+    global mxstate
+    if mxstate==0:
+        pygame.mixer.music.play(loops=0)
+        bplay.config(image=ipause)
+        mxstate=1
+        l=len(song)/10
+        text.config(state="normal")
+        text.delete(1.0,l )
+        text.insert(1.0,chars=song)
+        text.config(state='disabled')
+        return
+    if mxstate==1:
+        pygame.mixer.music.pause()
+        bplay.config(image=iplay)
+    else:
+        pygame.mixer.music.unpause()
+        bplay.config(image=ipause)
+    mxstate=3-mxstate
+    return
+
+
+def stop():
+    global mxstate
+    pygame.mixer.music.stop()
+    bplay.config(image=iplay)
+    mxstate=0
+    return
+
+    
+def volup():
+    global vol
+    vol=vol+0.1
+    pygame.mixer.music.set_volume(vol)
+    return vol
+    
+def voldown():
+    global vol
+    vol=vol-0.1
+    pygame.mixer.music.set_volume(vol)
+    return 
+
+def Next():
+    global i,res,song,now,mxstate
+    pygame.mixer.music.stop()
+    if i==len(res):
+        i=0
+    else:
+        i=i+1
+    song=res[i]
+    now=r'C:\Users\DEBOPAM DAS\Music\MusicPlayer\{}'.format(song)
+    pygame.mixer.music.load(now)
+    pygame.mixer.music.play(loops=0)
+    bplay.config(image=ipause)
+    mxstate=1
+    l=len(song)/10
+    text.config(state="normal")
+    text.delete(1.0,l )
+    text.insert(1.0,chars=song)
+    text.config(state='disabled')
+    return
+
+def prev():
+    global i,res,song,now,mxstate
+    pygame.mixer.music.stop()
+    if i<=0:
+        i=len(res)-1
+    else:
+        i=i-1
+    song=res[i]
+    now=r'C:\Users\DEBOPAM DAS\Music\MusicPlayer\{}'.format(song)
+    pygame.mixer.music.load(now)
+    pygame.mixer.music.play(loops=0)
+    bplay.config(image=ipause)
+    mxstate=1
+    l=len(song)/10
+    text.config(state="normal")
+    text.delete(1.0,l )
+    text.insert(1.0,chars=song)
+    text.config(state='disabled')
+    return
+
+
+#UI
+window = tkinter.Tk()
+
+window.title("Music Player")
+
+window.geometry("300x200")
+
+iprev= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\previous.png").subsample(3, 3)
+iplay= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\play.png").subsample(3, 3)
+ipause= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\pause.png").subsample(3, 3)
+inext= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\next.png").subsample(3, 3)
+ivolup= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\volup.png").subsample(3, 3)
+istop= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\stop.png").subsample(3, 3)
+ivoldown= PhotoImage(file = r"C:\Users\DEBOPAM DAS\OneDrive\Desktop\New folder\Images\music\voldown.png").subsample(3, 3)
+
+text=tkinter.Text(height=1,width=30)
+text.place(x=25,y=30)
+text.insert(1.0,chars="Song name...")
+text.config(state='disabled')
+
+l1=tkinter.Label(window,text="Now Playing:").place(x=25,y=5)
+
+bprev=tkinter.Button(window,text="previous",image=iprev, command=prev)
+bprev.image=iprev
+bprev.place(x=25,y=60)
+
+bplay=tkinter.Button(window,text="play",image=iplay,command=play_pause)
+bplay.image=iplay
+bplay.place(x=120,y=60)
+
+
+bNext=tkinter.Button(window,text="next",image=inext, command=Next)
+bNext.image=inext
+bNext.place(x=210,y=60)
+
+bvoldown=tkinter.Button(window,text="decrease volume",image=ivoldown, command=voldown)
+bvoldown.image=inext
+bvoldown.place(x=25,y=120)
+
+bstop=tkinter.Button(window,text="stop",image=istop,command=stop)
+bstop.image=istop
+bstop.place(x=120,y=120)
+
+bVolup=tkinter.Button(window,text="increase volume",image=ivolup, command=volup)
+bVolup.image=ivolup
+bVolup.place(x=210,y=120)
+
+window.mainloop()
+'''
+final submission
+'''
