@@ -1,0 +1,36 @@
+'''
+rock paper scissor game
+using random
+'''
+print("Rock! Paper!! Scissor!!!")
+import random
+actions=['rock','paper','scissor']
+
+def rps(p1,p2):
+    hand={'rock':0,'paper':1,'scissor':2}
+    results=["Draw","You win!","computer wins"]
+    if p1 in hand.keys():
+        return(print(results[hand[p1]-hand[p2]]))
+    else:
+        return(print("Key Error:",p1))
+        
+while True:
+    p1=input("Enter a choice(rock,paper,scissor):")
+    p2=random.choice(actions)
+    print('computer chose ',p2)
+    rps(p1,p2)
+    
+    q=input("play again? (y/n)")
+    if q=='y':
+        continue
+    elif q=='n':
+        break
+    else:
+        print("game halted due to wrong input")
+        break
+'''
+Thought:
+The variation of flag concept that i used in
+Music player, i wanted to test that
+as ypu can see from the rps
+'''
