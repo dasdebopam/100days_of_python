@@ -1,0 +1,40 @@
+'''
+Question:
+Raghu is a shoe shop owner. His shop has X number of shoes.
+He has a list containing the size of each shoe he has in his shop.
+There are N number of customers who are willing to pay xi amount of money only if they get the shoe of their desired size.
+Your task is to compute how much money Raghu earned.
+
+Input:
+10
+2 3 4 5 6 8 7 6 5 18
+6
+6 55
+6 45
+6 55
+4 40
+18 60
+10 50
+
+Output:
+200
+
+'''
+from collections import Counter
+X=input()
+size=input().split()
+N=int(input())
+buyer=[]
+for i in range(N):
+    buyer.append(input().split())
+shoes=Counter(size)
+money=0
+for i in buyer:
+    if i[0] in shoes.keys() and shoes[i[0]] != 0:
+        money+=int(i[1])
+        shoes[i[0]]-=1
+print(money)     
+'''
+Thought:
+Seemed simple..
+'''
