@@ -1,0 +1,24 @@
+'''
+Question:
+You are given a complex Z. Your task is to convert it to polar coordinates.
+
+Input:
+  1+2j
+  
+Output:
+ 2.23606797749979 
+ 1.1071487177940904
+ 
+'''
+# Enter your code here. Read input from STDIN. Print output to STDOUT
+z=input()
+z=complex(z)
+import cmath
+b=cmath.polar(z)
+for i in b:
+    print(i)
+
+'''
+thoughts:
+documentaries are nice things should be reading them more
+'''
