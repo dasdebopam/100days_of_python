@@ -1,0 +1,25 @@
+'''
+Question: Making my own code editor or IDE
+'''
+from tkinter import *
+
+def run():
+    c=box.get('1.0',END)
+    b=exec(c)
+    out.delete(1.0,END)
+    out.insert(END, b)
+    
+compiler=Tk()
+compiler.title("My Editor")
+run=Button(compiler,command=run,text="Run").pack()
+box=Text(compiler,height=22)
+box.pack()
+l=Label(compiler,text="results are...")
+l.pack()
+out=Text(compiler,height=10)
+out.pack()
+out.insert(END,"result \n")
+compiler.mainloop()
+'''
+Error in exec() command 
+'''
