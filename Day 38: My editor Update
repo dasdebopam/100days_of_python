@@ -1,0 +1,97 @@
+'''
+Qution:
+Creating a Code Editor for Python
+'''
+from tkinter import *
+from tkinter.filedialog import asksaveasfilename, askopenfilename
+import subprocess
+
+compiler = Tk()
+
+compiler.title("My Editor")
+compiler.geometry('750x600')
+file_path = ''
+
+
+def set_file_path(path):
+    global file_path
+    file_path = path
+
+
+def save_as():
+    if file_path == '':
+        path = asksaveasfilename(filetypes=[('Python Files', "*.py")])
+    else:
+        path = file_path
+    with open(path, 'w') as file:
+        code = box.get('1.0', END)
+        file.write(code)
+        set_file_path(path)
+
+
+def Open():
+    path = askopenfilename(filetypes=[('Python Files', "*.py")])
+    with open(path, 'r') as file:
+        code = file.read()
+        box.delete('1.0', END)
+        box.insert('1.0', code)
+        set_file_path(path)
+
+
+def run():
+    if file_path == '':
+        save_prompt = Toplevel()
+        text = Label(save_prompt, text='Please save your code')
+        text.pack()
+        return
+    command = f'python {file_path}'
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+    out.delete("1.0", END)
+    out.insert('1.0', output)
+    out.insert('1.0', error)
+
+
+menu_bar = Menu(compiler)  # creates menu option
+
+file_bar = Menu(menu_bar, tearoff=0)
+file_bar.add_command(label='Open', command=Open)
+file_bar.add_command(label='Save', command=save_as)
+file_bar.add_command(label='Save As', command=save_as)
+file_bar.add_command(label='Exit', command=exit)
+menu_bar.add_cascade(label='File', menu=file_bar)
+
+run_bar = Menu(menu_bar, tearoff=0)  # adds runbar under menubar
+run_bar.add_command(label='Run', command=run)  # adds label and command for run
+menu_bar.add_cascade(label='Run', menu=run_bar)  # adds label and place for the run bar
+
+compiler.config(menu=menu_bar)
+# run=Button(compiler,command=run,text="Run").pack()
+
+box = Text(compiler, wrap="none", bg="black", fg="yellow", insertbackground='white', font=('Times new roman', 18))
+
+v = Scrollbar(box, orient='vertical')
+v.pack(side=RIGHT, fill=Y)
+h = Scrollbar(box, orient='horizontal')
+h.pack(side=BOTTOM, fill=X)
+
+v.config(command=box.yview)
+h.config(command=box.xview)
+box.configure(yscrollcommand=v.set)
+box.configure(xscrollcommand=h.set)
+
+box.pack(fill="both", expand=1)
+
+l = Label(compiler, text="Output is here...")
+l.pack()
+
+out = Text(compiler, height=10, bg="black", fg="red", font=('Times new roman', 13))
+out.pack(fill="both")
+
+compiler.mainloop()
+
+'''
+Thoughts:
+"can't find '__main__' module" Error asked for help
+from programming hero
+'''
