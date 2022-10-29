@@ -94,4 +94,7 @@ compiler.mainloop()
 Thoughts:
 "can't find '__main__' module" Error asked for help
 from programming hero
+
+Only opening when file present in same directory
+NEED TO LEARN DIRECTORY HANDLING AND RUNNING
 '''
