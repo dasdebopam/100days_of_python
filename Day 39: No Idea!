@@ -1,0 +1,13 @@
+'''
+Question:
+https://www.hackerrank.com/challenges/no-idea/problem?isFullScreen=true
+'''
+k=input()
+n=input().split(" ")
+m1=input().split(" ")
+m2=input().split(" ")
+print(sum([(i in m1)-(i in m2) for i in n]))
+'''
+Thoughts:
+Need to learn about time complexity
+'''
