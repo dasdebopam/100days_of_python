@@ -1,0 +1,59 @@
+'''
+#Question:
+#Find factorial of a number and attemp to make it fast using memoization
+
+#Input: 
+a=6
+
+#Output:
+for 1 time taken 9.5367431640625e-07
+for 1 time taken 0.002408742904663086
+for 2 time taken 0.0028336048126220703
+for 6 time taken 0.00379180908203125
+for 24 time taken 0.004594087600708008
+for 120 time taken 0.00504755973815918
+for 720 time taken 0.006988525390625
+for 1 time taken 9.250640869140625e-05
+for 1 time taken 0.0017404556274414062
+for 2 time taken 0.0021314620971679688
+for 6 time taken 0.0022432804107666016
+for 24 time taken 0.0023381710052490234
+for 120 time taken 0.0024399757385253906
+for 720 time taken 0.003916740417480469
+720
+
+'''
+import time
+
+def dec(func):
+    def clock(*args,**kwargs):
+        start=time.time()
+        r=func(*args,**kwargs)
+        end=time.time()
+        print("for "+str(r)+" time taken "+str(end-start))
+        return r
+    return clock
+    
+@dec
+def fact1(n):
+    if n==0:
+        return 1
+    else:
+        return(n*fact1(n-1))
+term=[i for i in range(1000)]
+@dec
+def fact2(n):
+    if n==0:
+        return 1
+    else:
+        term[n]=n*fact2(n-1)
+        return term[n]
+        
+a=6
+fact1(a)
+fact2(a)
+'''
+Thoughts:
+as observed the time taken in the second approach was lot less than that of 1st approach
+there are few bugs in the program.
+'''
