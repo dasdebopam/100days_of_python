@@ -1,0 +1,30 @@
+'''
+Question: find the time taken by a program to calculate a factorial using decorators
+
+Input: 5
+
+Output: time taken for 120 is 1.430511474609375e-06
+'''
+import time
+import math
+
+def timex(func):
+  def inside(*args,**kwargs):
+    start=time.time()
+    result=func(*args,**kwargs)
+    stop=time.time()
+    return("time taken for "+ str(result) +" is "+str(stop-start))
+  return inside
+
+@timex
+def fact(n):
+  return(math.factorial(n))
+
+fact(5)
+'''
+Thoughts:
+decorator is a function that adds extra functionality to a function without explicitely changing it
+here the main function is that which calculates factorial of five
+timex function calculates the time of "any" function passed as an argument to it, thus it's a decorator
+a very flexible way of calling it is by usin @ before the main function
+'''
