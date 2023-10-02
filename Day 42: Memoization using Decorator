@@ -1,0 +1,39 @@
+'''
+Question:
+Find the nth Fibonacci number using memoization
+
+Input:
+n=50
+
+Output:
+12586269025  took  0.00023931099985929905
+'''
+#fibonacci memoized
+
+from time import perf_counter
+
+m={}                            #a cache or dictonary to save
+def memory(func):
+  def inner(*args,**kwargs):    #accepts arguments and keyword arguments of the target function
+    key=str(args)+str(kwargs)   #creating key for the m dic
+    if key not in m:
+      m[key]=func(*args, **kwargs) #saving f(n) as value and n as key
+    return m[key]               #returning the f(n)
+  return inner
+
+@memory
+def fib(n)->int:
+  if n < 2:
+    return n
+  return fib(n-1)+fib(n-2)
+
+start=perf_counter()            #start timer
+f=fib(50)                       #find the nth fibonacci value
+end=perf_counter()              #end timer
+
+print(f," took ",end-start) 
+'''
+Thoughts:
+the steps are explained in the coresponding comments
+need to see what else i can do with memoization
+'''
