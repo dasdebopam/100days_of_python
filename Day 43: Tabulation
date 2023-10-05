@@ -1,0 +1,38 @@
+'''
+Question:
+Find the factorial of n, make it fast using Tabulation and calculate the time take
+
+Input:
+20
+
+Output:
+time taken for 2432902008176640000 is 7.152557373046875e-06
+'''
+import time
+
+def timex(func):
+  def inside(*args,**kwargs):
+    start=time.time()
+    result=func(*args,**kwargs)
+    stop=time.time()
+    return("time taken for "+ str(result) +" is "+str(stop-start))
+  return inside
+
+@timex
+def factorial(n):
+  if n<1:
+    return 1
+  else:
+    f=[0]*(n+1)           #creation of the array/list
+    f[0]=1                #initialization
+    for i in range(1,n+1):#the loop
+      f[i]=i*f[i-1]       #the recursion + adding in the list
+    return f[n]
+
+
+factorial(20)
+
+'''
+Thoughts:
+Need to compare tabulation and memoization
+'''
