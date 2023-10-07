@@ -1,0 +1,47 @@
+'''
+Question: 
+find the factorial of a number using tabulation inside decorator
+
+Input:
+5
+10
+
+Output:
+[1, 1, 2, 6, 24, 120]
+120   0.002751986000021134
+[1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800]
+3628800   0.00016072900007202406
+'''
+def tabulation(func):
+    def inner(n):
+        if n >= (size := len(table)):                     #seting the size as the length of table and seeing if its' smaller or equal to n 
+            table.extend(map(func, range(size, n + 1)))   #extending the table with f(x) 
+            print(table)                                  #printing for vwerification
+        return table[n]                                   #returning the nth value of the table
+
+    table = []                                            #initialize the list first empty
+    return inner
+
+@tabulation
+def fact(n):
+    if n < 1:
+        return 1
+    return n * fact(n - 1)
+
+import time
+
+start = time.perf_counter()
+f = fact(5)
+end = time.perf_counter()
+print(f, " ", end - start)
+start = time.perf_counter()
+g = fact(10)
+end = time.perf_counter()
+print(g, " ", end - start)
+'''
+Thoughts:
+Thanks a lot blhsing
+I got to know about Walrus Opperator
+I got comfortable with decorators and map function
+there's a lot to learn
+'''
