@@ -1,0 +1,73 @@
+'''
+Question:
+Find the factorial of a number using memoization and tabulation using decorators and see which is faster
+
+Input:
+20
+200
+
+Output:
+2432902008176640000  took  6.609999991269433e-05
+2432902008176640000  took  4.7840000206633704e-05
+tabulation is slower
+
+788657867364790503552363213932185062295135977687173263294742533244359449963403342920304284011984623904177212138919638830257642790242637105061926624952829931113462857270763317237396988943922445621451664240254033291864131227428294853277524242407573903240321257405579568660226031904170324062351700858796178922222789623703897374720000000000000000000000000000000000000000000000000
+took  0.0001356910001959477
+788657867364790503552363213932185062295135977687173263294742533244359449963403342920304284011984623904177212138919638830257642790242637105061926624952829931113462857270763317237396988943922445621451664240254033291864131227428294853277524242407573903240321257405579568660226031904170324062351700858796178922222789623703897374720000000000000000000000000000000000000000000000000
+took  4.362900017440552e-05
+tabulation is slower
+
+'''
+#tabulation VS memoization with decorator
+import time
+
+def tab(func):
+  def inner(n):
+    if n>=(size:=len(m)):
+      m.extend(map(func,range(size,n+1)))
+    return m[n]
+  m=[]
+  return inner
+
+@tab
+def fact(n):
+  if n<=1:
+    return 1
+  else:
+    return n*fact(n-1)
+
+def men(func):
+  def inner(n):
+    if n not in m:
+      m[n]=func(n)
+    return(m[n])
+  m={}
+  return inner
+
+@men
+def fact1(n):
+  if n<=1:
+    return 1
+  else:
+    return n*fact1(n-1)
+
+start1=time.perf_counter()
+f=fact(200)
+end1=time.perf_counter()
+
+start2=time.perf_counter()
+g=fact(200)
+end2=time.perf_counter()
+
+print(f," took ",A:=(end1-start1))
+print(g," took ",B:=(end2-start2))
+
+if(A>B):
+  print("tabulation is slower")
+else:
+  print("memoization is slower")
+'''
+Thoughts:
+We have tried more than one way it seems irrespective of terms the execution matters
+While using a decorator **dictionary** use makes code faster and without it **iterating results** is faster
+'''
