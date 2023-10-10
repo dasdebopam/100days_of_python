@@ -1,0 +1,36 @@
+'''
+Question: Find the Nth Catalan number
+
+Input:
+n=15
+
+Output:
+9694845
+'''
+#Catalan number 1,1,2,5,14...
+
+def cat(func):
+  def inner(n):
+    if n not in m:
+      m[n]=func(n)
+      #print(m)
+    return (m[n])
+  m={}
+  return inner
+
+@cat
+def func(n):
+  if n<1:
+    return 1
+  res=0
+  for i in range(n):
+    res+=func(i)*func(n-i-1)
+  return res
+
+func(15)
+'''
+Thought:
+I had problem wrapping my head around the formula but 
+this was more of a test of dynamic problem will improve on that later
+but for now computing is made easier
+'''
