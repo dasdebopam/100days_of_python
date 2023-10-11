@@ -1,0 +1,70 @@
+'''
+Question:
+Make a simple game using OOP
+goal is to train as long as you can
+
+Input:
+feed  #1
+train  #2
+status  #3
+
+Output:
+#1 will give health
+#2 will give power but reduce health by a random number between 0 and 10
+#3 will sow health and power level
+'''
+# This is a sample Python script.
+import random
+# Press Shift+F10 to execute it or replace it with your code.
+# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+class Character:
+    def __init__(self, name):
+        self.name = name
+        self.health = 1
+        self.power = 1
+        self.life = 1
+
+    def feed(self):
+        if self.health < 10:
+            self.health += 1
+            print(f"{self.name} has been fed \n")
+        else:
+            print(f"{self.name} has max health \n")
+
+    def train(self):
+        self.health -= random.randint(0, 10)
+        if self.health <= 0:
+            self.life = 0
+            print(f"{self.name} died of exhaustion \n")
+        else:
+            self.power += 1
+            print(f"{self.health} has grown stronger \n")
+
+    def status(self):
+        print(f"{self.name}'s health is {self.health}")
+        print(f"{self.name}'s power level is {self.power}")
+
+
+Hero = Character("Lee")
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    global life
+    print("Welcome")
+    Hero.status()
+    while Hero.life == 1:
+        action = input("Enter the Command :")
+        if action == "status":
+            Hero.status()
+        elif action == "train":
+            Hero.train()
+        elif action == "feed":
+            Hero.feed()
+        else:
+            print("action invalid")
+
+'''
+Thought:
+Bout time i though i should make another game
+'''
