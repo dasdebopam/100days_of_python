@@ -1,0 +1,128 @@
+'''
+Question:
+make a effect for a spaceship flaying and getting effected by gravitation of a black hole
+
+Input:
+images of blackhole and space under the same directory
+
+Output:
+as desired
+'''
+import pygame
+import math
+
+pygame.init()
+
+WIDTH, HEIGHT = 800, 600
+win = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Escape the Black Hole")
+B_MASS=1000
+SHIP=5
+G = 5
+FPS = 60
+P_SIZE = 60
+OBJ_SIZE =7
+VEL_SCALE = 100
+
+BG= pygame.transform.scale(pygame.image.load("jeremy-perkins-uhjiu8FjnsQ-unsplash.jpg"), (WIDTH, HEIGHT))
+B=pygame.transform.scale(pygame.image.load("—Pngtree—blue vortex black hole_4491996.png"), (P_SIZE*2, P_SIZE*2))
+
+WHITE = (255, 255, 255)
+RED = (255, 0, 0)
+BLUE = (0, 0, 255)
+
+
+class Body:
+    def __init__(self,x,y,mass):
+        self.x=x
+        self.y=y
+        self.mass=mass
+
+    def draw(self):
+        win.blit(B, (self.x - P_SIZE, self.y - P_SIZE))
+
+
+class Spacecraft:
+    def __init__(self, x, y, vel_x, vel_y, mass):
+        self.x = x
+        self.y = y
+        self.vel_x = vel_x
+        self.vel_y = vel_y
+        self.mass = mass
+
+    def move(self,p=None):
+        distance = math.sqrt((self.x - p.x) ** 2 + (self.y - p.y) ** 2)
+        force = (G * self.mass * p.mass) / distance ** 2
+        acceleration = force / self.mass
+        angle = math.atan2(p.y - self.y, p.x - self.x)
+        acceleration_x = acceleration * math.cos(angle)
+        acceleration_y = acceleration * math.sin(angle)
+        self.vel_x += acceleration_x
+        self.vel_y += acceleration_y
+        self.x += self.vel_x
+        self.y += self.vel_y
+
+    def draw(self):
+        pygame.draw.circle(win, RED, (int(self.x), int(self.y)), OBJ_SIZE)
+
+
+def create_ship(location,mouse):
+    t_x,t_y=location
+    m_x,m_y=mouse
+    vel_x=(m_x-t_x)/VEL_SCALE
+    vel_y=(m_y-t_y)/VEL_SCALE
+    obj=Spacecraft(t_x,t_y,vel_x,vel_y,SHIP)
+    return obj
+
+
+def main():
+    running=True
+    clock = pygame.time.Clock()
+    p=Body(WIDTH//2,HEIGHT//2,B_MASS)
+    objects = []
+    temp_obj_position=None
+
+    while running:
+        mouse_pos=pygame.mouse.get_pos()
+
+        clock.tick(FPS)
+
+        for x in pygame.event.get():
+            if x.type == pygame.QUIT:
+                running = False
+
+            if x.type == pygame.MOUSEBUTTONDOWN:
+                if temp_obj_position:
+                    obj = create_ship(temp_obj_position,mouse_pos)
+                    objects.append(obj)
+                    temp_obj_position=None
+                else:
+                    temp_obj_position=mouse_pos
+        win.blit(BG,(0,0))
+        if temp_obj_position:
+            pygame.draw.line(win, WHITE, temp_obj_position, mouse_pos, 2)
+            pygame.draw.circle(win,RED,temp_obj_position,OBJ_SIZE )
+
+        for obj in objects[:]:
+            obj.draw()
+            obj.move(p)
+            off_screen = obj.x < 0 or obj.x > WIDTH or obj.y < 0 or obj.y > HEIGHT
+            collided = math.sqrt((obj.x - p.x) ** 2 + (obj.y - p.y) ** 2) <= P_SIZE
+            if off_screen or collided:
+                objects.remove(obj)
+
+        p.draw()
+
+        pygame.display.update()
+    pygame.quit()
+
+
+# Press the green button in the gutter to run the script.
+if __name__ == '__main__':
+    main()
+
+# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+'''
+Thought:
+this is from a python intermideate tutoril from Tech with Tim and thanks to Rohan Dey Sarkar
+'''
