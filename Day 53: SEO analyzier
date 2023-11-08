@@ -1,0 +1,92 @@
+'''
+Input: URL of any site
+Output: written as hashtags
+'''
+import requests
+from bs4 import BeautifulSoup
+
+url = 'https://business.amazon.com/'  # replace with the URL you want to analyze
+for i in url:
+    if i.isspace() == True:
+        print("there is space in url")
+
+response = requests.get(url)
+soup = BeautifulSoup(response.text, 'html.parser')
+
+# Check title length
+title = soup.find('title').string
+title_length = len(title)
+print(f'Title: {title}\nLength: {title_length}')
+
+# Check meta keyword
+meta_keyword_tag = soup.find('meta', attrs={'name': 'keywords'})
+if meta_keyword_tag:
+    meta_keyword = meta_keyword_tag.get('content')
+    meta_keyword_length = len(meta_keyword)
+else:
+    meta_keyword = None
+    meta_keyword_length = 0
+print(f'Meta keyword: {meta_keyword}\nLength: {meta_keyword_length}')
+
+# Check meta description
+meta_description_tag = soup.find('meta', attrs={'name': 'description'})
+if meta_description_tag:
+    meta_description = meta_description_tag.get('content')
+    meta_description_length = len(meta_description)
+else:
+    meta_description = None
+    meta_description_length = 0
+print(f'Meta description: {meta_description}\nLength: {meta_description_length}')
+if meta_description_length < 70:
+    print("Meta description length below lower limit of 70")
+if meta_description_length > 155:
+    print("Meta description length above upper limit of 155")
+
+# Check meta property="og:image"
+meta_property_tag = soup.find("meta", attrs={'property': 'og:image'})
+if meta_property_tag:
+    meta_property = meta_property_tag.get('content')
+    print("og image content: ", meta_property)
+
+# Check for h1 tag
+h1_tags = soup.find_all('h1')
+print(f'Number of H1 tags: {len(h1_tags)}')
+if len(h1_tags) == 0:
+    print("No H1 tags")
+
+# length of h1 tags should not exceed 70 chars
+for i in h1_tags:
+    if len(i) > 70:
+        print("h1 tag", i, "more than 70 chars")
+
+
+
+# check for alt tags in image
+meta_image_tag = soup.findAll('img')
+alt_tags = []
+for i in meta_image_tag:
+    alt_tags.append(i['alt'])
+    print(i['alt'])
+'''
+for link in soup.find_all('a', href=True):
+    try:
+        link_url = link['href']
+        # Ignore anchor links and mailto links
+        if link_url.startswith('#') or link_url.startswith('mailto:'):
+            continue
+        # If it's a relative link, add the base URL
+        elif link_url.startswith('/'):
+            link_url = url + link_url
+        # Send a head request (server returns only headers and no document body)
+        r = requests.head(link_url)
+        # Check if the request was successful
+        if r.status_code != 200:
+            print(f'Broken link: {link_url} (status code: {r.status_code})')
+    except requests.exceptions.RequestException as e:
+        print(f'Error checking link: {link_url} (error: {e})')
+'''
+Thoughts:
+just helped a friend 
+this counts as python <3
+'''
+'''
