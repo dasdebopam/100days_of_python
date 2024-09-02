@@ -1,0 +1,118 @@
+"""
+
+UI code for Performance App
+
+See how long you can go without breaking your habits
+Timeframe: Second, Minute, Hour, Day
+
+Req: tkinter
+
+"""
+import tkinter as tk
+import time
+
+
+class PerformanceApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Performance Calculator")
+
+        # Initial setup
+        self.frame_selected = None
+        self.f = 0
+        self.k = 0
+        self.start_time = None
+        self.time_frame_map = {'s': 1, 'm': 60, 'h': 3600, 'd': 86400}
+        self.stop_messages = []  # Store the last 5 stop messages
+
+        # Frame for time selection
+        self.selection_frame = tk.Frame(root)
+        self.selection_frame.pack()
+
+        self.label = tk.Label(self.selection_frame, text="Select Timeframe:")
+        self.label.pack()
+
+        self.frame_var = tk.StringVar(value='s')
+
+        for text, mode in self.time_frame_map.items():
+            tk.Radiobutton(self.selection_frame, text=text.upper(), variable=self.frame_var, value=text).pack(
+                anchor=tk.W)
+
+        self.start_button = tk.Button(self.selection_frame, text="START!", command=self.start_counting)
+        self.start_button.pack(pady=10)
+
+        # Frame for counting
+        self.count_frame = tk.Frame(root)
+
+        self.info_label = tk.Label(self.count_frame, text="")
+        self.info_label.pack()
+
+        self.stop_button = tk.Button(self.count_frame, text="Stop", command=self.stop_counting)
+        self.stop_button.pack(side=tk.LEFT, padx=20)
+
+        self.quit_button = tk.Button(self.count_frame, text="Quit", command=self.show_final)
+        self.quit_button.pack(side=tk.RIGHT, padx=20)
+
+        # Final Frame
+        self.final_frame = tk.Frame(root)
+
+        self.final_label = tk.Label(self.final_frame, text="")
+        self.final_label.pack(pady=20)
+
+        self.restart_button = tk.Button(self.final_frame, text="Restart", command=self.restart)
+        self.restart_button.pack(pady=10)
+
+    def start_counting(self):
+        self.frame_selected = self.frame_var.get()
+        self.f_inc = self.time_frame_map.get(self.frame_selected, 60)  # Default to minutes
+
+        self.start_time = time.time()
+        self.selection_frame.pack_forget()
+        self.count_frame.pack()
+        self.info_label.config(text=f"{self.frame_selected.upper()} selected\nCounting started...")
+
+    def update_info_label(self, new_message=None):
+        if new_message:
+            self.stop_messages.append(new_message)
+            # Keep only the last 5 stop messages
+            if len(self.stop_messages) > 5:
+                self.stop_messages.pop(0)
+
+        # Update the label with the last 5 stop messages
+        self.info_label.config(text="\n".join(self.stop_messages))
+
+    def stop_counting(self):
+        self.f += self.f_inc
+        self.k += 1
+        t = time.time() - self.start_time  # Update t as the time elapsed since start
+
+        # Calculate and display updated performance percentage
+        p = round(((t - self.f) / t) * 100, 4)
+        message = f"STOP pressed {self.k} times. Updated Performance (p): {p}%"
+        self.update_info_label(message)
+
+    def show_final(self):
+        self.count_frame.pack_forget()
+        t = time.time() - self.start_time  # Final update of elapsed time
+        p = round(((t - self.f) / t) * 100, 4)
+        final_text = f"Final Performance (p): {p}%.\nTotal 'STOP' presses: {self.k}, \nTime elapsed {round(t, 2)} seconds"
+        self.final_label.config(text=final_text)
+        self.final_frame.pack()
+
+    def restart(self):
+        self.final_frame.pack_forget()
+        self.f = 0
+        self.k = 0
+        self.start_time = None
+        self.stop_messages.clear()
+        self.selection_frame.pack()
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = PerformanceApp(root)
+    root.mainloop()
+
+
+"""
+"""
