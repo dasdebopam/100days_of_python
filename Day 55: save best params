@@ -1,0 +1,167 @@
+"""
+Problem: i was unsure which parameters to consider for a nn to get the best accuracy. and for that
+I made loops(4) to generate the accuracy and the parameters that get the best accuracy are saved.
+
+
+However, the code is time-consuming, so I changed it to save the last best parameters in a JSON file. 
+If in case I need to stop my device the best params are saved in the file so that the next time I run the code it starts from the last best params that are saved
+"""
+
+import json
+import numpy as np
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+
+# Define hyperparameter ranges
+learning_rates = np.logspace(-5, -1, num=5)  # [1e-5, 1e-4, 1e-3, 1e-2, 0.1]
+batch_sizes = list(range(16, 129, 16))  # [16, 32, 48, ..., 128]
+epochs_list = list(range(10, 51, 10))  # [10, 20, 30, 40, 50]
+neurons_list = list(range(32, 257, 32))  # [32, 64, 96, ..., 256]
+
+# Initialize variables to store the best results and progress
+best_accuracy = 0
+best_params = {}
+progress_file = "progress.json"  # File to store progress
+
+# Function to build the model with given hyperparameters
+def build_model(neurons, learning_rate):
+    model = Sequential()
+    model.add(Dense(neurons, activation='relu', input_shape=(X_train.shape[1],)))
+    model.add(Dropout(0.3))
+    model.add(Dense(neurons // 2, activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(Dense(1, activation='sigmoid'))  # Binary classification
+
+    # Compile the model
+    optimizer = Adam(learning_rate=learning_rate)
+    model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
+    return model
+
+# Function to save progress to a JSON file
+def save_progress(best_accuracy, best_params, completed):
+    data = {
+        "best_accuracy": best_accuracy,
+        "best_params": best_params,
+        "completed": completed
+    }
+    with open(progress_file, 'w') as f:
+        json.dump(data, f)
+
+# Function to load progress from a JSON file
+def load_progress():
+    try:
+        with open(progress_file, 'r') as f:
+            data = json.load(f)
+            return data["best_accuracy"], data["best_params"], data["completed"]
+    except (FileNotFoundError, KeyError):
+        return 0, {}, []  # If no progress found, start fresh
+
+# Load previous progress
+best_accuracy, best_params, completed = load_progress()
+
+# Flatten the completed combinations for easier comparison
+completed_set = set(tuple(c) for c in completed)  # Convert list of lists to set of tuples
+
+# Iterate over hyperparameters to find the best combination
+for lr in learning_rates:
+    for batch_size in batch_sizes:
+        for epochs in epochs_list:
+            for neurons in neurons_list:
+                # Skip combinations that are already completed
+                combination = (lr, batch_size, epochs, neurons)
+                if combination in completed_set:
+                    continue  # Skip completed combinations
+
+                print(f"Training with: lr={lr}, batch_size={batch_size}, epochs={epochs}, neurons={neurons}")
+
+                # Build and train the model
+                try:
+                    model = build_model(neurons, lr)
+                    model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size, validation_split=0.2, verbose=0)
+
+                    # Evaluate the model
+                    _, test_accuracy = model.evaluate(X_test, y_test, verbose=0)
+
+                    # Store the best parameters if the current model is better
+                    if test_accuracy > best_accuracy:
+                        best_accuracy = test_accuracy
+                        best_params = {
+                            'learning_rate': lr,
+                            'batch_size': batch_size,
+                            'epochs': epochs,
+                            'neurons': neurons
+                        }
+                        print(f"New Best Accuracy: {best_accuracy}")
+
+                finally:
+                    # Save progress no matter what (even on manual stop)
+                    completed.append(list(combination))  # Save as list for JSON compatibility
+                    save_progress(best_accuracy, best_params, completed)
+
+# Print the best hyperparameters and accuracy
+print("\nBest Hyperparameters:")
+print(best_params)
+print(f"Best Test Accuracy: {best_accuracy:.7f}")
+
+
+"""
+
+Output:
+{"best_accuracy": 0.9357722401618958, "best_params": {"learning_rate": 0.0001, "batch_size": 16, "epochs": 40, "neurons": 192},
+ "completed": [[1e-05, 16, 10, 32], [1e-05, 16, 10, 64], [1e-05, 16, 10, 96], [1e-05, 16, 10, 128], [1e-05, 16, 10, 160], [1e-05, 16, 10, 192],
+ [1e-05, 16, 10, 224], [1e-05, 16, 10, 256], [1e-05, 16, 20, 32], [1e-05, 16, 20, 64], [1e-05, 16, 20, 96], [1e-05, 16, 20, 128],
+ [1e-05, 16, 20, 160], [1e-05, 16, 20, 192], [1e-05, 16, 20, 224], [1e-05, 16, 20, 256], [1e-05, 16, 30, 32], [1e-05, 16, 30, 64], [1e-05, 16, 30, 96],
+ [1e-05, 16, 30, 128], [1e-05, 16, 30, 160], [1e-05, 16, 30, 192], [1e-05, 16, 30, 224], [1e-05, 16, 30, 256], [1e-05, 16, 40, 32], 
+[1e-05, 16, 40, 64], [1e-05, 16, 40, 96], [1e-05, 16, 40, 128], [1e-05, 16, 40, 160], [1e-05, 16, 40, 192], [1e-05, 16, 40, 224], [1e-05, 16, 40, 256], 
+[1e-05, 16, 50, 32], [1e-05, 16, 50, 64], [1e-05, 16, 50, 96], [1e-05, 16, 50, 128], [1e-05, 16, 50, 160], [1e-05, 16, 50, 192], 
+[1e-05, 16, 50, 224], [1e-05, 16, 50, 256], [1e-05, 32, 10, 32], [1e-05, 32, 10, 64], [1e-05, 32, 10, 96], [1e-05, 32, 10, 128], [1e-05, 32, 10, 160],
+ [1e-05, 32, 10, 192], [1e-05, 32, 10, 224], [1e-05, 32, 10, 256], [1e-05, 32, 20, 32], [1e-05, 32, 20, 64], [1e-05, 32, 20, 96], 
+[1e-05, 32, 20, 128], [1e-05, 32, 20, 160], [1e-05, 32, 20, 192], [1e-05, 32, 20, 224], [1e-05, 32, 20, 256], [1e-05, 32, 30, 32], [1e-05, 32, 30, 64],
+ [1e-05, 32, 30, 96], [1e-05, 32, 30, 128], [1e-05, 32, 30, 160], [1e-05, 32, 30, 192], [1e-05, 32, 30, 224], [1e-05, 32, 30, 256],
+ [1e-05, 32, 40, 32], [1e-05, 32, 40, 64], [1e-05, 32, 40, 96], [1e-05, 32, 40, 128], [1e-05, 32, 40, 160], [1e-05, 32, 40, 192], [1e-05, 32, 40, 224],
+ [1e-05, 32, 40, 256], [1e-05, 32, 50, 32], [1e-05, 32, 50, 64], [1e-05, 32, 50, 96], [1e-05, 32, 50, 128], [1e-05, 32, 50, 160], 
+[1e-05, 32, 50, 192], [1e-05, 32, 50, 224], [1e-05, 32, 50, 256], [1e-05, 48, 10, 32], [1e-05, 48, 10, 64], [1e-05, 48, 10, 96], [1e-05, 48, 10, 128],
+ [1e-05, 48, 10, 160], [1e-05, 48, 10, 192], [1e-05, 48, 10, 224], [1e-05, 48, 10, 256], [1e-05, 48, 20, 32], [1e-05, 48, 20, 64], 
+[1e-05, 48, 20, 96], [1e-05, 48, 20, 128], [1e-05, 48, 20, 160], [1e-05, 48, 20, 192], [1e-05, 48, 20, 224], [1e-05, 48, 20, 256], [1e-05, 48, 30, 32], 
+[1e-05, 48, 30, 64], [1e-05, 48, 30, 96], [1e-05, 48, 30, 128], [1e-05, 48, 30, 160], [1e-05, 48, 30, 192], [1e-05, 48, 30, 224], 
+[1e-05, 48, 30, 256], [1e-05, 48, 40, 32], [1e-05, 48, 40, 64], [1e-05, 48, 40, 96], [1e-05, 48, 40, 128], [1e-05, 48, 40, 160], [1e-05, 48, 40, 192],
+[1e-05, 48, 40, 224], [1e-05, 48, 40, 256], [1e-05, 48, 50, 32], [1e-05, 48, 50, 64], [1e-05, 48, 50, 96], [1e-05, 48, 50, 128],
+ [1e-05, 48, 50, 160], [1e-05, 48, 50, 192], [1e-05, 48, 50, 224], [1e-05, 48, 50, 256], [1e-05, 64, 10, 32], [1e-05, 64, 10, 64], [1e-05, 64, 10, 96],
+ [1e-05, 64, 10, 128], [1e-05, 64, 10, 160], [1e-05, 64, 10, 192], [1e-05, 64, 10, 224], [1e-05, 64, 10, 256], [1e-05, 64, 20, 32],
+ [1e-05, 64, 20, 64], [1e-05, 64, 20, 96], [1e-05, 64, 20, 128], [1e-05, 64, 20, 160], [1e-05, 64, 20, 192], [1e-05, 64, 20, 224], [1e-05, 64, 20, 256],
+ [1e-05, 64, 30, 32], [1e-05, 64, 30, 64], [1e-05, 64, 30, 96], [1e-05, 64, 30, 128], [1e-05, 64, 30, 160], [1e-05, 64, 30, 192],
+ [1e-05, 64, 30, 224], [1e-05, 64, 30, 256], [1e-05, 64, 40, 32], [1e-05, 64, 40, 64], [1e-05, 64, 40, 96], [1e-05, 64, 40, 128], [1e-05, 64, 40, 160], 
+[1e-05, 64, 40, 192], [1e-05, 64, 40, 224], [1e-05, 64, 40, 256], [1e-05, 64, 50, 32], [1e-05, 64, 50, 64], [1e-05, 64, 50, 96],
+ [1e-05, 64, 50, 128], [1e-05, 64, 50, 160], [1e-05, 64, 50, 192], [1e-05, 64, 50, 224], [1e-05, 64, 50, 256], [1e-05, 80, 10, 32], [1e-05, 80, 10, 64],
+ [1e-05, 80, 10, 96], [1e-05, 80, 10, 128], [1e-05, 80, 10, 160], [1e-05, 80, 10, 192], [1e-05, 80, 10, 224], [1e-05, 80, 10, 256], 
+[1e-05, 80, 20, 32], [1e-05, 80, 20, 64], [1e-05, 80, 20, 96], [1e-05, 80, 20, 128], [1e-05, 80, 20, 160], [1e-05, 80, 20, 192], [1e-05, 80, 20, 224],
+ [1e-05, 80, 20, 256], [1e-05, 80, 30, 32], [1e-05, 80, 30, 64], [1e-05, 80, 30, 96], [1e-05, 80, 30, 128], [1e-05, 80, 30, 160],
+ [1e-05, 80, 30, 192], [1e-05, 80, 30, 224], [1e-05, 80, 30, 256], [1e-05, 80, 40, 32], [1e-05, 80, 40, 64], [1e-05, 80, 40, 96], [1e-05, 80, 40, 128], 
+[1e-05, 80, 40, 160], [1e-05, 80, 40, 192], [1e-05, 80, 40, 224], [1e-05, 80, 40, 256], [1e-05, 80, 50, 32], [1e-05, 80, 50, 64],
+ [1e-05, 80, 50, 96], [1e-05, 80, 50, 128], [1e-05, 80, 50, 160], [1e-05, 80, 50, 192], [1e-05, 80, 50, 224], [1e-05, 80, 50, 256], [1e-05, 96, 10, 32], 
+[1e-05, 96, 10, 64], [1e-05, 96, 10, 96], [1e-05, 96, 10, 128], [1e-05, 96, 10, 160], [1e-05, 96, 10, 192], [1e-05, 96, 10, 224], 
+[1e-05, 96, 10, 256], [1e-05, 96, 20, 32], [1e-05, 96, 20, 64], [1e-05, 96, 20, 96], [1e-05, 96, 20, 128], [1e-05, 96, 20, 160], [1e-05, 96, 20, 192], 
+[1e-05, 96, 20, 224], [1e-05, 96, 20, 256], [1e-05, 96, 30, 32], [1e-05, 96, 30, 64], [1e-05, 96, 30, 96], [1e-05, 96, 30, 128], 
+[1e-05, 96, 30, 160], [1e-05, 96, 30, 192], [1e-05, 96, 30, 224], [1e-05, 96, 30, 256], [1e-05, 96, 40, 32], [1e-05, 96, 40, 64], [1e-05, 96, 40, 96],
+ [1e-05, 96, 40, 128], [1e-05, 96, 40, 160], [1e-05, 96, 40, 192], [1e-05, 96, 40, 224], [1e-05, 96, 40, 256], [1e-05, 96, 50, 32], 
+[1e-05, 96, 50, 64], [1e-05, 96, 50, 96], [1e-05, 96, 50, 128], [1e-05, 96, 50, 160], [1e-05, 96, 50, 192], [1e-05, 96, 50, 224], [1e-05, 96, 50, 256], 
+[1e-05, 112, 10, 32], [1e-05, 112, 10, 64], [1e-05, 112, 10, 96], [1e-05, 112, 10, 128], [1e-05, 112, 10, 160], [1e-05, 112, 10, 192], 
+[1e-05, 112, 10, 224], [1e-05, 112, 10, 256], [1e-05, 112, 20, 32], [1e-05, 112, 20, 64], [1e-05, 112, 20, 96], [1e-05, 112, 20, 128], [1e-05, 112, 20, 160], 
+1e-05, 112, 20, 192], [1e-05, 112, 20, 224], [1e-05, 112, 20, 256], [1e-05, 112, 30, 32], [1e-05, 112, 30, 64], [1e-05, 112, 30, 96],
+ [1e-05, 112, 30, 128], [1e-05, 112, 30, 160], [1e-05, 112, 30, 192], [1e-05, 112, 30, 224], [1e-05, 112, 30, 256], [1e-05, 112, 40, 32], [1e-05, 112, 40, 64],
+ [1e-05, 112, 40, 96], [1e-05, 112, 40, 128], [1e-05, 112, 40, 160], [1e-05, 112, 40, 192], [1e-05, 112, 40, 224], [1e-05, 112, 40, 256], 
+[1e-05, 112, 50, 32], [1e-05, 112, 50, 64], [1e-05, 112, 50, 96], [1e-05, 112, 50, 128], [1e-05, 112, 50, 160], [1e-05, 112, 50, 192], [1e-05, 112, 50, 224],
+ [1e-05, 112, 50, 256], [1e-05, 128, 10, 32], [1e-05, 128, 10, 64], [1e-05, 128, 10, 96], [1e-05, 128, 10, 128], [1e-05, 128, 10, 160], 
+[1e-05, 128, 10, 192], [1e-05, 128, 10, 224], [1e-05, 128, 10, 256], [1e-05, 128, 20, 32], [1e-05, 128, 20, 64], [1e-05, 128, 20, 96], [1e-05, 128, 20, 128],
+ [1e-05, 128, 20, 160], [1e-05, 128, 20, 192], [1e-05, 128, 20, 224], [1e-05, 128, 20, 256], [1e-05, 128, 30, 32], [1e-05, 128, 30, 64],
+ [1e-05, 128, 30, 96], [1e-05, 128, 30, 128], [1e-05, 128, 30, 160], [1e-05, 128, 30, 192], [1e-05, 128, 30, 224], [1e-05, 128, 30, 256], [1e-05, 128, 40, 32],
+ [1e-05, 128, 40, 64], [1e-05, 128, 40, 96], [1e-05, 128, 40, 128], [1e-05, 128, 40, 160], [1e-05, 128, 40, 192], [1e-05, 128, 40, 224],
+ [1e-05, 128, 40, 256], [1e-05, 128, 50, 32], [1e-05, 128, 50, 64], [1e-05, 128, 50, 96], [1e-05, 128, 50, 128], [1e-05, 128, 50, 160], [1e-05, 128, 50, 192],
+ [1e-05, 128, 50, 224], [1e-05, 128, 50, 256], [0.0001, 16, 10, 32], [0.0001, 16, 10, 64], [0.0001, 16, 10, 96], [0.0001, 16, 10, 128], 
+[0.0001, 16, 10, 160], [0.0001, 16, 10, 192], [0.0001, 16, 10, 224], [0.0001, 16, 10, 256], [0.0001, 16, 20, 32], [0.0001, 16, 20, 64], [0.0001, 16, 20, 96], 
+[0.0001, 16, 20, 128], [0.0001, 16, 20, 160], [0.0001, 16, 20, 192], [0.0001, 16, 20, 224], [0.0001, 16, 20, 256], [0.0001, 16, 30, 32],
+ [0.0001, 16, 30, 64], [0.0001, 16, 30, 96], [0.0001, 16, 30, 128], [0.0001, 16, 30, 160], [0.0001, 16, 30, 192], [0.0001, 16, 30, 224], [0.0001, 16, 30, 256], 
+[0.0001, 16, 40, 32], [0.0001, 16, 40, 64], [0.0001, 16, 40, 96], [0.0001, 16, 40, 128], [0.0001, 16, 40, 160], [0.0001, 16, 40, 192],
+ [0.0001, 16, 40, 224], [0.0001, 16, 40, 256], [0.0001, 16, 50, 32], [0.0001, 16, 50, 64], [0.0001, 16, 50, 96], [0.0001, 16, 50, 128], [0.0001, 16, 50, 160]]}
+"""
